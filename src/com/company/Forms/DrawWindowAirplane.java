@@ -1,4 +1,6 @@
-package com.company;
+package com.company.Forms;
+
+import com.company.Transport.ITransport;
 
 import javax.swing.*;
 import java.awt.*;

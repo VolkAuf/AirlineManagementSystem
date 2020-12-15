@@ -1,12 +1,12 @@
-package com.company;
+package com.company.Additions;
 
 import java.awt.*;
 
-public class SquareIlluminate implements Additions {
+public class ArcIlluminate implements IAdditions {
 
     private CountOfIlluminate countOfIlluminate;
 
-    public SquareIlluminate(int digit) {
+    public ArcIlluminate(int digit) {
         setDigit(digit);
     }
 
@@ -18,18 +18,20 @@ public class SquareIlluminate implements Additions {
     @Override
     public void DrawEntity(Graphics g, Color color, float x, float y, int airplaneWidth, int airplaneHeight) {
 
+        int arcStart = 0;
+        int arcFinish = 180;
         double marginY = 0.515;
         double marginX = 0.2;
 
         for (float i = 0; i < 0.6; i += 0.1) {
             g.setColor(color);
-            g.fillRect((int) (x + airplaneWidth * (marginX + i)),
+            g.fillArc((int) (x + airplaneWidth * (marginX + i)),
                     (int) (y + airplaneHeight * marginY), (int) (airplaneWidth * 0.04),
-                    (int) (airplaneWidth * 0.04));
+                    (int) (airplaneWidth * 0.04), arcStart, arcFinish);
             g.setColor(Color.white);
-            g.drawRect((int) (x + airplaneWidth * (marginX + i)),
+            g.drawArc((int) (x + airplaneWidth * (marginX + i)),
                     (int) (y + airplaneHeight * marginY), (int) (airplaneWidth * 0.04),
-                    (int) (airplaneWidth * 0.04));
+                    (int) (airplaneWidth * 0.04), arcStart, arcFinish);
         }
 
         if (countOfIlluminate == CountOfIlluminate.twenty || countOfIlluminate == CountOfIlluminate.thirty) {
@@ -37,13 +39,13 @@ public class SquareIlluminate implements Additions {
             marginX -= 0.025;
             for (float i = 0; i < 0.6; i += 0.1) {
                 g.setColor(color);
-                g.fillRect((int) (x + airplaneWidth * (marginX + i)),
+                g.fillArc((int) (x + airplaneWidth * (marginX + i)),
                         (int) (y + airplaneHeight * marginY), (int) (airplaneWidth * 0.04),
-                        (int) (airplaneWidth * 0.04));
+                        (int) (airplaneWidth * 0.04), arcStart, arcFinish);
                 g.setColor(Color.white);
-                g.drawRect((int) (x + airplaneWidth * (marginX + i)),
+                g.drawArc((int) (x + airplaneWidth * (marginX + i)),
                         (int) (y + airplaneHeight * marginY), (int) (airplaneWidth * 0.04),
-                        (int) (airplaneWidth * 0.04));
+                        (int) (airplaneWidth * 0.04), arcStart, arcFinish);
             }
         }
 
@@ -52,13 +54,13 @@ public class SquareIlluminate implements Additions {
             marginX -= 0.025;
             for (float i = 0; i < 0.6; i += 0.1) {
                 g.setColor(color);
-                g.fillRect((int) (x + airplaneWidth * (marginX + i)),
+                g.fillArc((int) (x + airplaneWidth * (marginX + i)),
                         (int) (y + airplaneHeight * marginY), (int) (airplaneWidth * 0.04),
-                        (int) (airplaneWidth * 0.04));
+                        (int) (airplaneWidth * 0.04), arcStart, arcFinish);
                 g.setColor(Color.white);
-                g.drawRect((int) (x + airplaneWidth * (marginX + i)),
+                g.drawArc((int) (x + airplaneWidth * (marginX + i)),
                         (int) (y + airplaneHeight * marginY), (int) (airplaneWidth * 0.04),
-                        (int) (airplaneWidth * 0.04));
+                        (int) (airplaneWidth * 0.04), arcStart, arcFinish);
             }
         }
     }

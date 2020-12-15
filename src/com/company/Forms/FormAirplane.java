@@ -1,4 +1,9 @@
-package com.company;
+package com.company.Forms;
+
+import com.company.Transport.Direction;
+import com.company.Transport.AirTransport;
+import com.company.Transport.Airbus;
+import com.company.Transport.Airplane;
 
 import javax.swing.*;
 import java.awt.*;

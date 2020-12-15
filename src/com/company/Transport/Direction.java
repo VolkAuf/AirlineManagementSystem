@@ -1,4 +1,4 @@
-package com.company;
+package com.company.Transport;
 
 public enum Direction {
     Up,

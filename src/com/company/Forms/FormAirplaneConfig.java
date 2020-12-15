@@ -1,4 +1,11 @@
-package com.company;
+package com.company.Forms;
+
+import com.company.Additions.ArcIlluminate;
+import com.company.Additions.CircleIlluminate;
+import com.company.Additions.IAdditions;
+import com.company.Additions.SquareIlluminate;
+import com.company.Transport.Airbus;
+import com.company.Transport.Airplane;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -11,7 +18,7 @@ public class FormAirplaneConfig extends JDialog {
 
     private Airplane airplane;
     private Color colorAirplane;
-    private Additions additionsAirplane;
+    private IAdditions additionsAirplane;
     private boolean acceptCheck;
     private final DrawWindowAirplane drawWindowAirplane;
 

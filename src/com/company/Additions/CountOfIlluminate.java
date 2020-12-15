@@ -1,4 +1,4 @@
-package com.company;
+package com.company.Additions;
 
 public enum CountOfIlluminate {
     ten,

@@ -1,8 +1,8 @@
-package com.company;
+package com.company.Additions;
 
 import java.awt.*;
 
-public class CircleIlluminate implements Additions {
+public class CircleIlluminate implements IAdditions {
 
     private CountOfIlluminate countOfIlluminate;
 

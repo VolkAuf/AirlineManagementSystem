@@ -1,5 +1,11 @@
 package com.company;
 
+import com.company.Additions.IAdditions;
+import com.company.Exceptions.AerodromeAlreadyHaveException;
+import com.company.Exceptions.AerodromeOverflowException;
+import com.company.Transport.Airbus;
+import com.company.Transport.Airplane;
+
 import java.io.*;
 import java.security.KeyException;
 import java.util.HashMap;
@@ -8,11 +14,12 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class AerodromeCollection {
-    private final Map<String, Aerodrome<Airplane, Additions>> aerodromeStages;
+    private static final String SEPARATOR = ":";
+    private static final String END_LINE = "\n";
+    private final Map<String, Aerodrome<Airplane, IAdditions>> aerodromeStages;
 
     private final int pictureWidth;
     private final int pictureHeight;
-    private final String separator = ":";
 
     public AerodromeCollection(int pictureWidth, int pictureHeight) {
         this.pictureWidth = pictureWidth;
@@ -34,7 +41,7 @@ public class AerodromeCollection {
         aerodromeStages.remove(name);
     }
 
-    public Aerodrome<Airplane, Additions> get(String name) {
+    public Aerodrome<Airplane, IAdditions> get(String name) {
         if (aerodromeStages.containsKey(name)) {
             return aerodromeStages.get(name);
         }
@@ -46,24 +53,23 @@ public class AerodromeCollection {
             filename += ".txt";
         }
         try (FileWriter fileWriter = new FileWriter(filename, false)) {
-            fileWriter.write("AerodromeCollection\n");
-            for (Map.Entry<String, Aerodrome<Airplane, Additions>> level : aerodromeStages.entrySet()) {
-                fileWriter.write("Aerodrome" + separator + level.getKey() + '\n');
+            fileWriter.write("AerodromeCollection" + END_LINE);
+            for (Map.Entry<String, Aerodrome<Airplane, IAdditions>> level : aerodromeStages.entrySet()) {
+                fileWriter.write("Aerodrome" + SEPARATOR + level.getKey() + END_LINE);
 
-                Airplane airplane;
-                for (int i = 0; (airplane = level.getValue().get(i)) != null; i++) {
+                for (Airplane airplane : level.getValue()) {
                     if (airplane.getClass().getSimpleName().equals("Airplane")) {
-                        fileWriter.write("Airplane" + separator);
+                        fileWriter.write("Airplane" + SEPARATOR);
                     } else if (airplane.getClass().getSimpleName().equals("Airbus")) {
-                        fileWriter.write("Airbus" + separator);
+                        fileWriter.write("Airbus" + SEPARATOR);
                     }
-                    fileWriter.write(airplane.toString() + '\n');
+                    fileWriter.write(airplane.toString() + END_LINE);
                 }
             }
         }
     }
 
-    public void loadFile(String filename) throws IOException, AerodromeOverflowException {
+    public void loadFile(String filename) throws IOException, AerodromeOverflowException, AerodromeAlreadyHaveException {
         if (!(new File(filename).exists())) {
             throw new FileNotFoundException("File " + filename + " not found");
         }
@@ -82,13 +88,13 @@ public class AerodromeCollection {
             while (scanner.hasNextLine()) {
                 line = scanner.nextLine();
                 if (line.contains("Aerodrome")) {
-                    key = line.split(separator)[1];
+                    key = line.split(SEPARATOR)[1];
                     aerodromeStages.put(key, new Aerodrome<>(pictureWidth, pictureHeight));
-                } else if (line.contains(separator)) {
+                } else if (line.contains(SEPARATOR)) {
                     if (line.contains("Airplane")) {
-                        airplane = new Airplane(line.split(separator)[1]);
+                        airplane = new Airplane(line.split(SEPARATOR)[1]);
                     } else if (line.contains("Airbus")) {
-                        airplane = new Airbus(line.split(separator)[1]);
+                        airplane = new Airbus(line.split(SEPARATOR)[1]);
                     }
                     if (!(aerodromeStages.get(key).plus(airplane))) {
                         throw new AerodromeOverflowException();
@@ -99,54 +105,55 @@ public class AerodromeCollection {
     }
 
     public void saveAerodrome(String filename, String key) throws IOException, KeyException {
-        if (!filename.contains(".txt")) {
+        if (!filename.contains(".txt")){
             filename += ".txt";
         }
-        if (aerodromeStages.containsKey(key)) {
-            try (FileWriter fileWriter = new FileWriter(filename, false)) {
-                fileWriter.write("Aerodrome" + separator + key + '\n');
 
-                Airplane airplane;
-                for (int i = 0; (airplane = aerodromeStages.get(key).get(i)) != null; i++) {
-                    if (airplane.getClass().getSimpleName().equals("Airplane")) {
-                        fileWriter.write("Airplane" + separator);
-                    } else if (airplane.getClass().getSimpleName().equals("Airbus")) {
-                        fileWriter.write("Airbus" + separator);
-                    }
-                    fileWriter.write(airplane.toString() + '\n');
-                }
-            }
-        } else {
+        if (!aerodromeStages.containsKey(key)) {
             throw new KeyException();
+        }
+
+        try (FileWriter fileWriter = new FileWriter(filename, false)) {
+            fileWriter.write("Aerodrome" + SEPARATOR + key + END_LINE);
+
+            Airplane airplane;
+            for (int i = 0; (airplane = aerodromeStages.get(key).get(i)) != null; i++) {
+                if (airplane.getClass().getSimpleName().equals("Airplane")) {
+                    fileWriter.write("Airplane" + SEPARATOR);
+                } else if (airplane.getClass().getSimpleName().equals("Airbus")) {
+                    fileWriter.write("Airbus" + SEPARATOR);
+                }
+                fileWriter.write(airplane.toString() + END_LINE);
+            }
         }
     }
 
-    public void loadAerodrome(String filename) throws IOException, AerodromeOverflowException {
+    public void loadAerodrome(String filename) throws IOException, AerodromeOverflowException, AerodromeAlreadyHaveException {
         try (FileReader fileReader = new FileReader(filename)) {
             Scanner scanner = new Scanner(fileReader);
             String key;
             String line;
 
             line = scanner.nextLine();
-            if (line.contains("Aerodrome:")) {
-                key = line.split(separator)[1];
-                if (aerodromeStages.containsKey(key)) {
-                    aerodromeStages.get(key).clear();
-                } else {
-                    aerodromeStages.put(key, new Aerodrome<>(pictureWidth, pictureHeight));
-                }
-            } else {
+            if (!line.contains("Aerodrome:")) {
                 throw new IllegalArgumentException("Invalid file format");
+            }
+
+            key = line.split(SEPARATOR)[1];
+            if (aerodromeStages.containsKey(key)) {
+                aerodromeStages.get(key).clear();
+            } else {
+                aerodromeStages.put(key, new Aerodrome<>(pictureWidth, pictureHeight));
             }
 
             Airplane airplane = null;
             while (scanner.hasNextLine()) {
                 line = scanner.nextLine();
-                if (line.contains(separator)) {
+                if (line.contains(SEPARATOR)) {
                     if (line.contains("Airplane")) {
-                        airplane = new Airplane(line.split(separator)[1]);
+                        airplane = new Airplane(line.split(SEPARATOR)[1]);
                     } else if (line.contains("Airbus")) {
-                        airplane = new Airbus(line.split(separator)[1]);
+                        airplane = new Airbus(line.split(SEPARATOR)[1]);
                     }
                     if (!(aerodromeStages.get(key).plus(airplane))) {
                         throw new AerodromeOverflowException();
